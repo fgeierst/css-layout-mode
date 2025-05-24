@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    
+
     let element: string = $state("");
     let elementDetails: ElementDetails | null = $state(null);
 
@@ -67,7 +67,8 @@
             return {
                 mode: "Table",
                 variant: element.computedStyles.display,
-                details: "Table-based layout that establishes a table formatting context. Elements behave like table parts (rows, cells, etc.). Can create anonymous boxes to ensure proper table structure. Useful for tabular data but less flexible than modern layout methods. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_table' target='_blank'>MDN: Table Layout</a>",
+                details:
+                    "Table-based layout that establishes a table formatting context. Elements behave like table parts (rows, cells, etc.). Can create anonymous boxes to ensure proper table structure. Useful for tabular data but less flexible than modern layout methods. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_table' target='_blank'>MDN: Table Layout</a>",
             };
         }
 
@@ -116,7 +117,8 @@
         return {
             mode: "Flow",
             variant: element.computedStyles.display || "unknown",
-            details: "Default document flow layout. Part of the normal flow positioning scheme where boxes are laid out one after another in the document's writing mode. May participate in block or inline formatting contexts depending on the display value. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Visual_formatting_model' target='_blank'>MDN: Visual Formatting Model</a>",
+            details:
+                "Default document flow layout. Part of the normal flow positioning scheme where boxes are laid out one after another in the document's writing mode. May participate in block or inline formatting contexts depending on the display value. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Visual_formatting_model' target='_blank'>MDN: Visual Formatting Model</a>",
         };
     }
 
@@ -176,11 +178,13 @@
         // );
     }
 
-    let layoutMode = $derived(elementDetails ? evaluateCssLayoutMode(elementDetails) : null);
-    
+    let layoutMode = $derived(
+        elementDetails ? evaluateCssLayoutMode(elementDetails) : null,
+    );
+
     onMount(() => {
         update();
-        
+
         // Set up listener for element selection changes
         browser.devtools.panels.elements.onSelectionChanged.addListener(() => {
             update();
@@ -191,103 +195,28 @@
 <main>
     {#if element}
         <div class="element-info">
-            <h2>{element}</h2>
             {#if elementDetails}
                 {#if layoutMode}
-                <div class="layout-summary">
-                    <p class="layout-mode-type">
-                        <strong>Layout Algorithm:</strong>
-                        {layoutMode.mode}
-                    </p>
-                    <p class="layout-variant">
-                        <strong>Variant:</strong>
-                        {layoutMode.variant}
-                    </p>
-                    <p class="layout-description">
-                        {@html layoutMode.details}
-                    </p>
-                </div>
-                {/if}
-                <details>
-                    <summary>Details</summary>
-                    <div class="details">
-                        <h3>Element Details</h3>
-                        {#if elementDetails.id}
-                            <p><strong>ID:</strong> {elementDetails.id}</p>
-                        {/if}
-                        {#if elementDetails.className}
-                            <p>
-                                <strong>Classes:</strong>
-                                {elementDetails.className}
-                            </p>
-                        {/if}
-                        {#if elementDetails.attributes && elementDetails.attributes.length > 0}
-                            <div class="attributes">
-                                <h4>Attributes</h4>
-                                <ul>
-                                    {#each elementDetails.attributes as attr}
-                                        <li>
-                                            <strong>{attr.name}:</strong>
-                                            {attr.value}
-                                        </li>
-                                    {/each}
-                                </ul>
-                            </div>
-                        {/if}
-                        {#if elementDetails.textContent}
-                            <p>
-                                <strong>Text:</strong>
-                                {elementDetails.textContent}...
-                            </p>
-                        {/if}
-
-                        {#if elementDetails.layoutMode}
-                            <div class="layout-mode">
-                                <h4>CSS Layout Mode</h4>
-                                <p>
-                                    <strong>Mode:</strong>
-                                    {elementDetails.layoutMode.mode}
-                                </p>
-                                <p>
-                                    <strong>Variant:</strong>
-                                    {elementDetails.layoutMode.variant}
-                                </p>
-                                <p>
-                                    <strong>Details:</strong>
-                                    {@html elementDetails.layoutMode.details}
-                                </p>
-                            </div>
-                        {/if}
+                    <div class="layout-summary">
+                        <p class="layout-mode-type">
+                            <strong>Layout Algorithm:</strong>
+                            {layoutMode.mode}
+                        </p>
+                        <p class="layout-variant">
+                            <strong>Variant:</strong>
+                            {layoutMode.variant}
+                        </p>
+                        <p class="layout-description">
+                            {@html layoutMode.details}
+                        </p>
                     </div>
-                    <pre>{JSON.stringify(elementDetails, null, 2)}</pre>
-                </details>
+                {/if}
             {/if}
         </div>
     {/if}
 </main>
 
 <style>
-    .layout-mode {
-        margin-top: 1rem;
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: #f8f8f8;
-    }
-
-    .layout-mode h4 {
-        margin-top: 0;
-        color: #333;
-    }
-
-    pre {
-        max-height: 300px;
-        overflow: auto;
-        background-color: #f5f5f5;
-        padding: 0.5rem;
-        border-radius: 4px;
-    }
-
     :global(.layout-description a) {
         color: #0366d6;
         text-decoration: none;
