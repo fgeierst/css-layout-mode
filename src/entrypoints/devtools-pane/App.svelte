@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+    
     let element: string = $state("");
     let elementDetails: ElementDetails | null = $state(null);
 
@@ -27,7 +29,7 @@
                 mode: "Positioned",
                 variant: element.computedStyles.position,
                 details:
-                    "Uses properties like top, left, right, bottom, and z-index",
+                    "Out-of-flow positioning scheme where the box is removed from normal flow and positioned relative to its containing block. Uses properties like top, left, right, bottom, and z-index. Creates a new positioning context for descendants.",
             };
         }
 
@@ -40,7 +42,7 @@
                 mode: "Flexbox",
                 variant: element.computedStyles.display,
                 details:
-                    "A flexible box layout with properties like justify-content, align-items",
+                    "A flexible box layout that establishes an independent flex formatting context. Child elements become flex items arranged along main and cross axes. Uses properties like flex-direction, justify-content, align-items, and flex properties on children.",
             };
         }
 
@@ -52,7 +54,7 @@
                 mode: "Grid",
                 variant: element.computedStyles.display,
                 details:
-                    "A grid-based layout with properties like grid-template-columns, grid-template-rows",
+                    "A grid-based layout that establishes an independent grid formatting context. Child elements become grid items positioned within defined grid cells. Uses properties like grid-template-columns, grid-template-rows, grid-area, and grid-placement properties.",
             };
         }
 
@@ -65,7 +67,7 @@
             return {
                 mode: "Table",
                 variant: element.computedStyles.display,
-                details: "Table-based layout",
+                details: "Table-based layout that establishes a table formatting context. Elements behave like table parts (rows, cells, etc.). Can create anonymous boxes to ensure proper table structure. Useful for tabular data but less flexible than modern layout methods.",
             };
         }
 
@@ -78,7 +80,7 @@
                 mode: "Float",
                 variant: element.computedStyles.float,
                 details:
-                    "Floated elements will float to the left or right of their container",
+                    "A partially out-of-flow positioning scheme where the box is first laid out in normal flow, then taken out and shifted left or right. Content flows around floated elements. Can be cleared with the clear property. Creates a new block formatting context when contained with display: flow-root.",
             };
         }
 
@@ -88,7 +90,7 @@
                 mode: "Flow",
                 variant: "block",
                 details:
-                    "Standard block-level flow layout - elements stack vertically",
+                    "Standard block-level flow layout in the normal flow - elements stack vertically in the block direction. Creates a block formatting context containing block-level boxes. Takes up the full width available and creates line breaks before and after.",
             };
         }
 
@@ -97,7 +99,7 @@
                 mode: "Flow",
                 variant: "inline",
                 details:
-                    "Standard inline flow layout - elements flow horizontally with text",
+                    "Standard inline-level flow layout in the normal flow - elements flow horizontally with text in the inline direction. Participates in an inline formatting context. Does not create line breaks before or after. Margins/paddings only apply horizontally, not vertically.",
             };
         }
 
@@ -106,7 +108,7 @@
                 mode: "Flow",
                 variant: "inline-block",
                 details:
-                    "Hybrid flow layout - behaves like a block but flows inline",
+                    "Hybrid flow layout - behaves like a block container for its contents but flows inline like an inline element. Creates a block formatting context while participating in the surrounding inline formatting context. Supports vertical margins/padding unlike inline elements.",
             };
         }
 
@@ -114,7 +116,7 @@
         return {
             mode: "Flow",
             variant: element.computedStyles.display || "unknown",
-            details: "Default document flow layout",
+            details: "Default document flow layout. Part of the normal flow positioning scheme where boxes are laid out one after another in the document's writing mode. May participate in block or inline formatting contexts depending on the display value.",
         };
     }
 
@@ -174,19 +176,24 @@
         // );
     }
 
-    let layoutMode = $derived(evaluateCssLayoutMode(elementDetails));
+    let layoutMode = $derived(elementDetails ? evaluateCssLayoutMode(elementDetails) : null);
+    
     onMount(() => {
         update();
+        
+        // Set up listener for element selection changes
+        browser.devtools.panels.elements.onSelectionChanged.addListener(() => {
+            update();
+        });
     });
 </script>
 
 <main>
-    <button onclick={update}>Get Selected Element</button>
-
     {#if element}
         <div class="element-info">
             <h2>{element}</h2>
             {#if elementDetails}
+                {#if layoutMode}
                 <div class="layout-summary">
                     <p class="layout-mode-type">
                         <strong>Layout Algorithm:</strong>
@@ -200,6 +207,7 @@
                         {layoutMode.details}
                     </p>
                 </div>
+                {/if}
                 <details>
                     <summary>Details</summary>
                     <div class="details">
