@@ -29,7 +29,7 @@
                 mode: "Positioned",
                 variant: element.computedStyles.position,
                 details:
-                    "Out-of-flow positioning scheme where the box is removed from normal flow and positioned relative to its containing block. Uses properties like top, left, right, bottom, and z-index. Creates a new positioning context for descendants.",
+                    "Out-of-flow positioning scheme where the box is removed from normal flow and positioned relative to its containing block. Uses properties like top, left, right, bottom, and z-index. Creates a new positioning context for descendants. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout' target='_blank'>MDN: Positioned Layout</a>",
             };
         }
 
@@ -42,7 +42,7 @@
                 mode: "Flexbox",
                 variant: element.computedStyles.display,
                 details:
-                    "A flexible box layout that establishes an independent flex formatting context. Child elements become flex items arranged along main and cross axes. Uses properties like flex-direction, justify-content, align-items, and flex properties on children.",
+                    "A flexible box layout that establishes an independent flex formatting context. Child elements become flex items arranged along main and cross axes. Uses properties like flex-direction, justify-content, align-items, and flex properties on children. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout' target='_blank'>MDN: Flexbox</a>",
             };
         }
 
@@ -54,7 +54,7 @@
                 mode: "Grid",
                 variant: element.computedStyles.display,
                 details:
-                    "A grid-based layout that establishes an independent grid formatting context. Child elements become grid items positioned within defined grid cells. Uses properties like grid-template-columns, grid-template-rows, grid-area, and grid-placement properties.",
+                    "A grid-based layout that establishes an independent grid formatting context. Child elements become grid items positioned within defined grid cells. Uses properties like grid-template-columns, grid-template-rows, grid-area, and grid-placement properties. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout' target='_blank'>MDN: Grid Layout</a>",
             };
         }
 
@@ -67,7 +67,7 @@
             return {
                 mode: "Table",
                 variant: element.computedStyles.display,
-                details: "Table-based layout that establishes a table formatting context. Elements behave like table parts (rows, cells, etc.). Can create anonymous boxes to ensure proper table structure. Useful for tabular data but less flexible than modern layout methods.",
+                details: "Table-based layout that establishes a table formatting context. Elements behave like table parts (rows, cells, etc.). Can create anonymous boxes to ensure proper table structure. Useful for tabular data but less flexible than modern layout methods. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_table' target='_blank'>MDN: Table Layout</a>",
             };
         }
 
@@ -80,7 +80,7 @@
                 mode: "Float",
                 variant: element.computedStyles.float,
                 details:
-                    "A partially out-of-flow positioning scheme where the box is first laid out in normal flow, then taken out and shifted left or right. Content flows around floated elements. Can be cleared with the clear property. Creates a new block formatting context when contained with display: flow-root.",
+                    "A partially out-of-flow positioning scheme where the box is first laid out in normal flow, then taken out and shifted left or right. Content flows around floated elements. Can be cleared with the clear property. Creates a new block formatting context when contained with display: flow-root. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/float' target='_blank'>MDN: Floats</a>",
             };
         }
 
@@ -90,7 +90,7 @@
                 mode: "Flow",
                 variant: "block",
                 details:
-                    "Standard block-level flow layout in the normal flow - elements stack vertically in the block direction. Creates a block formatting context containing block-level boxes. Takes up the full width available and creates line breaks before and after.",
+                    "Standard block-level flow layout in the normal flow - elements stack vertically in the block direction. Creates a block formatting context containing block-level boxes. Takes up the full width available and creates line breaks before and after. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context' target='_blank'>MDN: Block Formatting</a>",
             };
         }
 
@@ -99,7 +99,7 @@
                 mode: "Flow",
                 variant: "inline",
                 details:
-                    "Standard inline-level flow layout in the normal flow - elements flow horizontally with text in the inline direction. Participates in an inline formatting context. Does not create line breaks before or after. Margins/paddings only apply horizontally, not vertically.",
+                    "Standard inline-level flow layout in the normal flow - elements flow horizontally with text in the inline direction. Participates in an inline formatting context. Does not create line breaks before or after. Margins/paddings only apply horizontally, not vertically. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display#inline-level_elements' target='_blank'>MDN: Inline Formatting</a>",
             };
         }
 
@@ -108,7 +108,7 @@
                 mode: "Flow",
                 variant: "inline-block",
                 details:
-                    "Hybrid flow layout - behaves like a block container for its contents but flows inline like an inline element. Creates a block formatting context while participating in the surrounding inline formatting context. Supports vertical margins/padding unlike inline elements.",
+                    "Hybrid flow layout - behaves like a block container for its contents but flows inline like an inline element. Creates a block formatting context while participating in the surrounding inline formatting context. Supports vertical margins/padding unlike inline elements. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/display-inline-block' target='_blank'>MDN: Inline-Block</a>",
             };
         }
 
@@ -116,7 +116,7 @@
         return {
             mode: "Flow",
             variant: element.computedStyles.display || "unknown",
-            details: "Default document flow layout. Part of the normal flow positioning scheme where boxes are laid out one after another in the document's writing mode. May participate in block or inline formatting contexts depending on the display value.",
+            details: "Default document flow layout. Part of the normal flow positioning scheme where boxes are laid out one after another in the document's writing mode. May participate in block or inline formatting contexts depending on the display value. <a href='https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Visual_formatting_model' target='_blank'>MDN: Visual Formatting Model</a>",
         };
     }
 
@@ -204,7 +204,7 @@
                         {layoutMode.variant}
                     </p>
                     <p class="layout-description">
-                        {layoutMode.details}
+                        {@html layoutMode.details}
                     </p>
                 </div>
                 {/if}
@@ -254,7 +254,7 @@
                                 </p>
                                 <p>
                                     <strong>Details:</strong>
-                                    {elementDetails.layoutMode.details}
+                                    {@html elementDetails.layoutMode.details}
                                 </p>
                             </div>
                         {/if}
@@ -286,5 +286,14 @@
         background-color: #f5f5f5;
         padding: 0.5rem;
         border-radius: 4px;
+    }
+
+    :global(.layout-description a) {
+        color: #0366d6;
+        text-decoration: none;
+    }
+
+    :global(.layout-description a:hover) {
+        text-decoration: underline;
     }
 </style>
